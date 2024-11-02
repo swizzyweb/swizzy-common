@@ -1,7 +1,7 @@
 {
   "name": "@swizzyweb/swizzy-common",
   "version": "0.1.0",
-  "description": "",
+  "description": "Common package for swizzy",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "type": "commonjs",
@@ -14,5 +14,19 @@
   "license": "MIT",
   "devDependencies": {
     "typescript": "^5.4.5"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/swizzyweb/SwizzyCommon.git"
+  },
+  "keywords": [
+    "swizzy",
+    "common",
+    "browser",
+    "toolkit"
+  ],
+  "bugs": {
+    "url": "https://github.com/swizzyweb/SwizzyCommon/issues"
+  },
+  "homepage": "https://github.com/swizzyweb/SwizzyCommon#readme"
 }
