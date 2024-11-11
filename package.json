@@ -1,6 +1,6 @@
 {
   "name": "@swizzyweb/swizzy-common",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Common package for swizzy",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -13,6 +13,7 @@
   "author": "WannaWatchMeCode",
   "license": "MIT",
   "devDependencies": {
+    "@types/node": "^22.9.0",
     "typescript": "^5.4.5"
   },
   "repository": {
