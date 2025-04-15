@@ -1,6 +1,6 @@
 {
   "name": "@swizzyweb/swizzy-common",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Common package for swizzy",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -8,12 +8,18 @@
   "scripts": {
     "build": "tsc",
     "clean": "rm -rf ./node_modules ./dist",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest"
   },
   "author": "WannaWatchMeCode",
-  "license": "MIT",
+  "license": "GPL-3.0-only",
   "devDependencies": {
+    "@babel/core": "^7.26.10",
+    "@babel/preset-env": "^7.26.9",
+    "@types/jest": "^29.5.14",
     "@types/node": "^22.9.0",
+    "babel-jest": "^29.7.0",
+    "jest": "^29.7.0",
+    "ts-jest": "^29.3.2",
     "typescript": "^5.4.5"
   },
   "repository": {
@@ -29,5 +35,8 @@
   "bugs": {
     "url": "https://github.com/swizzyweb/SwizzyCommon/issues"
   },
-  "homepage": "https://github.com/swizzyweb/SwizzyCommon#readme"
+  "homepage": "https://github.com/swizzyweb/SwizzyCommon#readme",
+  "dependencies": {
+    "ts-node": "^10.9.2"
+  }
 }

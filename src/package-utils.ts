@@ -1,75 +1,97 @@
-import path from 'path';
-import fs from 'fs';
+import path from "path";
+import fs from "fs";
 
 function getCallerFile() {
-    var filename;
+  var filename;
 
-    var _pst = (Error as any).prepareStackTrace
-    Error.prepareStackTrace = function (err: any, stack: any) { return stack; };
-    try {
-        var err: any = new Error();
-        var callerfile;
-        var currentfile;
+  var _pst = (Error as any).prepareStackTrace;
+  Error.prepareStackTrace = function (err: any, stack: any) {
+    return stack;
+  };
+  try {
+    var err: any = new Error();
+    var callerfile;
+    var currentfile;
 
-        currentfile = err!.stack!.shift()!.getFileName();
+    currentfile = err!.stack!.shift()!.getFileName();
 
-        while (err!.stack!.length) {
-            callerfile = err!.stack!.shift()!.getFileName();
+    while (err!.stack!.length) {
+      callerfile = err!.stack!.shift()!.getFileName();
 
-            if(currentfile !== callerfile) {
-                filename = callerfile;
-                break;
-            }
-        }
-    } catch (err) {}
-    (Error as any).prepareStackTrace = _pst;
+      if (currentfile !== callerfile) {
+        filename = callerfile;
+        break;
+      }
+    }
+  } catch (err) {}
+  (Error as any).prepareStackTrace = _pst;
 
-    return filename;
+  return filename;
 }
 
 function getCallerFileByIndex(index: number) {
-    var filename;
+  var filename;
 
-    var _pst = (Error as any).prepareStackTrace
-    Error.prepareStackTrace = function (err: any, stack: any) { return stack; };
-    try {
-        var err: any = new Error();
-        var callerfile;
-        var currentfile;
+  var _pst = (Error as any).prepareStackTrace;
+  Error.prepareStackTrace = function (err: any, stack: any) {
+    return stack;
+  };
+  try {
+    var err: any = new Error();
+    var callerfile;
+    var currentfile;
 
-        for (let i=0; i<index; i++) {
-          currentfile = err!.stack!.shift()!.getFileName();
-        }
-        filename = currentfile;
-    } catch (err) {}
-    (Error as any).prepareStackTrace = _pst;
+    for (let i = 0; i < index; i++) {
+      currentfile = err!.stack!.shift()!.getFileName();
+    }
+    filename = currentfile;
+  } catch (err) {}
+  (Error as any).prepareStackTrace = _pst;
 
-    return filename;
+  return filename;
 }
 
 /**
-* Nest size if the directory nesting level below package.json in the
-* calling function.
-*/
+ * Nest size if the directory nesting level below package.json in the
+ * calling function.
+ */
 export function getPackageJson(nestSize: number, callerIndex = 1): any {
   let callerFileName;
   if (callerIndex == 1) {
-
-   callerFileName = getCallerFile();
+    callerFileName = getCallerFile();
   } else {
     callerFileName = getCallerFileByIndex(callerIndex);
   }
   const upDirs = getUpDirs(nestSize);
-   const packageJson = JSON.parse(fs.readFileSync(path.join(path.dirname(callerFileName), upDirs, 'package.json')).toString());
+  const packageJson = JSON.parse(
+    fs
+      .readFileSync(
+        path.join(path.dirname(callerFileName), upDirs, "package.json"),
+      )
+      .toString(),
+  );
   return packageJson;
+}
 
-  
+export function getPackageJsonFromDirectory(packagePath: string) {
+  try {
+    const packageJson = JSON.parse(
+      fs.readFileSync(path.join(packagePath, "package.json")).toString(),
+    );
+    return packageJson;
+  } catch (e) {
+    throw {
+      message: `Error while getting package json from path`,
+      packagePath,
+      error: e,
+    };
+  }
 }
 
 function getUpDirs(nestSize: number) {
   let upDirs = "";
-for(let i=0 ;i<nestSize; i++) {
-  upDirs += "../";
-}
+  for (let i = 0; i < nestSize; i++) {
+    upDirs += "../";
+  }
   return upDirs;
 }
