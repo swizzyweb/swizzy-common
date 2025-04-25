@@ -47,7 +47,7 @@ export abstract class BaseLogger<PROPS> implements ILogger<PROPS> {
 
   clone(props: PROPS): ILogger<PROPS> {
     // @ts-ignore
-    return new this.constructor(props);
+    return new this.constructor({ ...this.loggerProps, ...props });
   }
 }
 
