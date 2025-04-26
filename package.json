@@ -1,6 +1,6 @@
 {
   "name": "@swizzyweb/swizzy-common",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "description": "Common package for swizzy",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
