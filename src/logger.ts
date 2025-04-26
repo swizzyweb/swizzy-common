@@ -57,7 +57,7 @@ export abstract class BaseLogger<PROPS> implements ILogger<PROPS> {
   }
 
   clone(overrides: any): ILogger<PROPS> {
-    const newProps = deepMerge(this.getLoggerProps() as any, overrides);
+    const newProps = deepMerge((this.getLoggerProps() as any) ?? {}, overrides);
     // @ts-ignore
     return new this.constructor(newProps);
   }
@@ -65,7 +65,7 @@ export abstract class BaseLogger<PROPS> implements ILogger<PROPS> {
 
 export class BrowserLogger extends BaseLogger<any> {
   constructor(props?: any) {
-    super(props);
+    super(props ?? {});
   }
   log(val: string, ...meta: any[]): void {
     console.log(val, ...meta);
