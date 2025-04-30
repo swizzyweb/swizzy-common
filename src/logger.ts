@@ -41,7 +41,6 @@ export abstract class BaseLogger<PROPS> implements ILogger<PROPS> {
   protected loggerProps: PROPS;
   clazz: NewLoggerClass<PROPS>;
   constructor(props: PROPS) {
-    console.log(`loggerProps: ${props}`);
     this.loggerProps = props;
     this.clazz = Object.getPrototypeOf(this);
   }

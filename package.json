@@ -1,6 +1,6 @@
 {
   "name": "@swizzyweb/swizzy-common",
-  "version": "0.2.5",
+  "version": "0.2.6",
   "description": "Common package for swizzy",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -37,6 +37,7 @@
   },
   "homepage": "https://github.com/swizzyweb/SwizzyCommon#readme",
   "dependencies": {
-    "ts-node": "^10.9.2"
+    "ts-node": "^10.9.2",
+    "ts-transformer-keys": "^0.4.4"
   }
 }
