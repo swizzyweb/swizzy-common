@@ -1,3 +1,7 @@
+import { deepMerge } from "./merge-util";
+
+export type NewLoggerClass<PROPS> = new (props: PROPS) => ILogger<PROPS>;
+
 export interface ILogger<PROPS> {
   /** Default log method
    */
@@ -21,18 +25,24 @@ export interface ILogger<PROPS> {
   /**
    * Clone this logger with optional overrides.
    */
-  clone(props: PROPS): ILogger<PROPS>;
+  clone(props: any): ILogger<PROPS>;
 
   /**
    *
    */
   getLoggerProps(): PROPS;
+
+  /**
+   *
+   * */
 }
 
 export abstract class BaseLogger<PROPS> implements ILogger<PROPS> {
   protected loggerProps: PROPS;
+  clazz: NewLoggerClass<PROPS>;
   constructor(props: PROPS) {
     this.loggerProps = props;
+    this.clazz = Object.getPrototypeOf(this);
   }
 
   abstract log(val: string, ...meta: any[]): void;
@@ -42,18 +52,19 @@ export abstract class BaseLogger<PROPS> implements ILogger<PROPS> {
   abstract debug(val: string, ...meta: any[]): void;
 
   getLoggerProps(): PROPS {
-    return { ...this.loggerProps };
+    return this.loggerProps;
   }
 
-  clone(props: PROPS): ILogger<PROPS> {
+  clone(overrides: any): ILogger<PROPS> {
+    const newProps = deepMerge((this.getLoggerProps() as any) ?? {}, overrides);
     // @ts-ignore
-    return new this.constructor(props);
+    return new this.constructor(newProps);
   }
 }
 
 export class BrowserLogger extends BaseLogger<any> {
   constructor(props?: any) {
-    super(props);
+    super(props ?? {});
   }
   log(val: string, ...meta: any[]): void {
     console.log(val, ...meta);
@@ -70,4 +81,8 @@ export class BrowserLogger extends BaseLogger<any> {
   debug(val: string, ...meta: any[]): void {
     console.debug(val, ...meta);
   }
+}
+
+function deepCopy<OUT_MODEL>(val: OUT_MODEL): OUT_MODEL {
+  return JSON.parse(JSON.stringify(val));
 }

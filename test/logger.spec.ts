@@ -14,5 +14,10 @@ describe("Logger tests", () => {
       const cloned = logger.clone({});
       expect(logger).toEqual(cloned); // Since no props overriden, deep equzl should work
     });
+
+    it("Should return empty loggerProps when browserlogger initialized with null props", () => {
+      const logger = new log.BrowserLogger();
+      expect(logger.getLoggerProps()).toEqual({});
+    });
   });
 });
