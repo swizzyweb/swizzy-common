@@ -1,5 +1,5 @@
-export * from "./logger";
-export * from "./package-utils";
-export * from "./merge-util";
+export * from "./logger.js";
+export * from "./package-utils.js";
+export * from "./merge-util.js";
 
-export * from "./path-utils";
+export * from "./path-utils.js";

@@ -1,4 +1,4 @@
-import { deepMerge } from "./merge-util";
+import { deepMerge } from "./merge-util.js";
 
 export type NewLoggerClass<PROPS> = new (props: PROPS) => ILogger<PROPS>;
 

@@ -4,23 +4,24 @@ import {
   deepClone,
   deepMerge,
   shallowMergeLeftFromRight,
-} from "../src/merge-util";
-
-describe("deepClone", () => {
-  it("should clone primitives", () => {
+} from "../dist/merge-util.js";
+import test from "node:test";
+import expect from "expect";
+test("deepClone", () => {
+  test.it("should clone primitives", () => {
     expect(deepClone(42)).toBe(42);
     expect(deepClone("hello")).toBe("hello");
     expect(deepClone(null)).toBeNull();
   });
 
-  it("should clone Date objects", () => {
+  test.it("should clone Date objects", () => {
     const date = new Date();
     const clonedDate = deepClone(date);
     expect(clonedDate).not.toBe(date);
     expect(clonedDate.getTime()).toBe(date.getTime());
   });
 
-  it("should clone arrays deeply", () => {
+  test.it("should clone arrays deeply", () => {
     const arr = [1, { a: 2 }];
     const clonedArr = deepClone(arr);
     expect(clonedArr).not.toBe(arr);
@@ -28,7 +29,7 @@ describe("deepClone", () => {
     expect(clonedArr[1]).not.toBe(arr[1]); // deep clone check
   });
 
-  it("should clone nested objects", () => {
+  test.it("should clone nested objects", () => {
     const obj = { a: { b: 2 } };
     const clonedObj = deepClone(obj);
     expect(clonedObj).not.toBe(obj);
@@ -36,7 +37,7 @@ describe("deepClone", () => {
     expect(clonedObj.a).not.toBe(obj.a);
   });
 
-  it("should clone Map and Set", () => {
+  test.it("should clone Map and Set", () => {
     const map = new Map<string, number>([["a", 1]]);
     const set = new Set<number>([1, 2, 3]);
 
@@ -51,8 +52,8 @@ describe("deepClone", () => {
   });
 });
 
-describe("deepMerge", () => {
-  it("should deeply merge two simple objects", () => {
+test("deepMerge", () => {
+  test.it("should deeply merge two simple objects", () => {
     const a = { name: "jason", age: 23 };
     const b = { age: 24, job: "developer" };
     const merged = deepMerge(a, b);
@@ -60,7 +61,7 @@ describe("deepMerge", () => {
     expect(merged).toEqual({ name: "jason", age: 24, job: "developer" });
   });
 
-  it("should deeply merge nested objects", () => {
+  test.it("should deeply merge nested objects", () => {
     const a = { config: { val1: 1 } };
     const b = { config: { val2: 2 } };
     const merged = deepMerge(a, b);
@@ -68,7 +69,7 @@ describe("deepMerge", () => {
     expect(merged).toEqual({ config: { val1: 1, val2: 2 } });
   });
 
-  it("should merge arrays with unique values", () => {
+  test.it("should merge arrays with unique values", () => {
     const a = { items: ["apple", "banana"] };
     const b = { items: ["banana", "cherry"] };
     const merged = deepMerge(a, b);
@@ -79,7 +80,7 @@ describe("deepMerge", () => {
     expect(merged.items.length).toBe(3);
   });
 
-  it("should handle merging objects with Date", () => {
+  test.it("should handle merging objects with Date", () => {
     const date = new Date();
     const a = { created: date };
     const b = { updated: new Date(date.getTime() + 1000) };
@@ -89,7 +90,7 @@ describe("deepMerge", () => {
     expect(merged.updated.getTime()).toBe(date.getTime() + 1000);
   });
 
-  it("should not mutate the original objects", () => {
+  test.it("should not mutate the original objects", () => {
     const a = { nested: { key: "value" } };
     const b = { nested: { newKey: "newValue" } };
     const merged = deepMerge(a, b);
@@ -99,7 +100,7 @@ describe("deepMerge", () => {
     expect(merged).toEqual({ nested: { key: "value", newKey: "newValue" } });
   });
 
-  it("should clone and merge Maps and Sets", () => {
+  test.it("should clone and merge Maps and Sets", () => {
     const map1 = new Map<string, any>([["a", 1]]);
     const map2 = new Map<string, any>([["b", 2]]);
     const set1 = new Set<number>([1, 2]);
@@ -122,7 +123,7 @@ describe("deepMerge", () => {
     );
   });
 
-  it("Should take second object priority on merge conflict", () => {
+  test.it("Should take second object priority on merge conflict", () => {
     const date = new Date();
     const a = { created: date, myVal: 1 };
     const b = { updated: new Date(date.getTime() + 1000), myVal: 2 };
@@ -133,57 +134,60 @@ describe("deepMerge", () => {
     expect(merged.myVal).toEqual(2);
   });
 
-  it("Should shallow merge left from right without additional right proprties", () => {
-    const left = {
-      hello: "world",
-      data: {
-        age: 2,
-        name: "first",
-      },
-      dummy: undefined,
-    };
+  test.it(
+    "Should shallow merge left from right without additional right proprties",
+    () => {
+      const left = {
+        hello: "world",
+        data: {
+          age: 2,
+          name: "first",
+        },
+        dummy: undefined,
+      };
 
-    const leftOrig = {
-      hello: "world",
-      data: {
-        age: 2,
-        name: "first",
-      },
-      dummy: undefined,
-    };
+      const leftOrig = {
+        hello: "world",
+        data: {
+          age: 2,
+          name: "first",
+        },
+        dummy: undefined,
+      };
 
-    const right = {
-      hello: "Goodbye",
-      data: {
+      const right = {
+        hello: "Goodbye",
+        data: {
+          age: 5,
+          name: "first and last",
+        },
+        dummy: {
+          some: {
+            value: "secret",
+          },
+          true: true,
+          count: 1.32,
+        },
+        someValueThatShouldntBeCopied: 1,
+        anodaOne: {
+          message: "heck yeah!",
+        },
+        somethingTrue: false,
+        nothing: undefined,
+      };
+      const result = shallowMergeLeftFromRight(left, right);
+      expect(left).not.toEqual(leftOrig);
+      expect(left.hello).toEqual("Goodbye");
+      expect(left.data).toEqual({
         age: 5,
         name: "first and last",
-      },
-      dummy: {
-        some: {
-          value: "secret",
-        },
-        true: true,
-        count: 1.32,
-      },
-      someValueThatShouldntBeCopied: 1,
-      anodaOne: {
-        message: "heck yeah!",
-      },
-      somethingTrue: false,
-      nothing: undefined,
-    };
-    const result = shallowMergeLeftFromRight(left, right);
-    expect(left).not.toEqual(leftOrig);
-    expect(left.hello).toEqual("Goodbye");
-    expect(left.data).toEqual({
-      age: 5,
-      name: "first and last",
-    });
-    expect(left.dummy).toEqual(right.dummy);
-    const keys = Array.from(Object.keys(left));
-    const origKeys = Array.from(Object.keys(leftOrig));
-    expect(keys).toEqual(origKeys);
-    expect(left).toEqual(result);
-    console.log(left);
-  });
+      });
+      expect(left.dummy).toEqual(right.dummy);
+      const keys = Array.from(Object.keys(left));
+      const origKeys = Array.from(Object.keys(leftOrig));
+      expect(keys).toEqual(origKeys);
+      expect(left).toEqual(result);
+      console.log(left);
+    },
+  );
 });
