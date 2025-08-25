@@ -1,6 +1,6 @@
 {
   "name": "@swizzyweb/swizzy-common",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "Common package for swizzy",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -9,7 +9,8 @@
     "build": "tsc",
     "clean": "rm -rf ./node_modules ./dist",
     "test": "node --test test/*.spec.ts",
-    "coverage": "c8 node --test test/*.spec.ts"
+    "coverage": "c8 node --test test/*.spec.ts",
+    "docs": "npx typedoc src/index.ts"
   },
   "author": "WannaWatchMeCode",
   "license": "GPL-3.0-only",
@@ -33,5 +34,7 @@
     "url": "https://github.com/swizzyweb/SwizzyCommon/issues"
   },
   "homepage": "https://github.com/swizzyweb/SwizzyCommon#readme",
-  "dependencies": {}
+  "dependencies": {
+    "typedoc": "^0.28.10"
+  }
 }
