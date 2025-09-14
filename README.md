@@ -1,2 +1,3 @@
 # swizzy-common
-Common components for swizzy browser toolkit
+
+Common components for swizzyweb.

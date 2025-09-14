@@ -1,6 +1,6 @@
 {
   "name": "@swizzyweb/swizzy-common",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "description": "Common package for swizzy",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -22,7 +22,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/swizzyweb/SwizzyCommon.git"
+    "url": "git+https://github.com/swizzyweb/swizzy-common.git"
   },
   "keywords": [
     "swizzy",
@@ -31,9 +31,9 @@
     "toolkit"
   ],
   "bugs": {
-    "url": "https://github.com/swizzyweb/SwizzyCommon/issues"
+    "url": "https://github.com/swizzyweb/swizzy-common/issues"
   },
-  "homepage": "https://github.com/swizzyweb/SwizzyCommon#readme",
+  "homepage": "https://github.com/swizzyweb/swizzy-common#readme",
   "dependencies": {
     "typedoc": "^0.28.10"
   }
