@@ -1,7 +1,7 @@
 /**
  * @module Loggers
  */
-import { BaseLogger, BrowserLogger, ILogger } from "@swizzyweb/swizzy-common";
+import { BaseLogger, BrowserLogger, ILogger } from "./logger.js";
 import { createLogger, format, info, level, Logger, transports } from "winston";
 import * as path from "path";
 import "winston-daily-rotate-file";
