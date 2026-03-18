@@ -7,6 +7,60 @@ import * as path from "path";
 import "winston-daily-rotate-file";
 import { mkdirSync } from "fs";
 
+export interface LogLabelDisplayConfiguration {
+  /**
+   * Whether to display hostname.
+   * Default: true
+   */
+  hostNameEnabled?: boolean;
+
+  /**
+   * Whether to display port.
+   * Default: true
+   */
+  portEnabled?: boolean;
+
+  /**
+   * Whether to display instanceId.
+   * Default: true
+   */
+  instanceIdEnabled?: boolean;
+
+  /**
+   * Whether to display appName.
+   * Default: true
+   */
+  appNameEnabled?: boolean;
+
+  /**
+   * Whether to display pid.
+   * Default: true
+   */
+  pidEnabled?: boolean;
+
+  /**
+   * Whether to display ownerName.
+   * Default: true
+   */
+  ownerNameEnabled?: boolean;
+
+  /**
+   * Do not display label.
+   * Default: false
+   */
+  none?: boolean;
+}
+
+const DefaultLabelConfiguration: LogLabelDisplayConfiguration = {
+  hostNameEnabled: true,
+  portEnabled: true,
+  instanceIdEnabled: true,
+  appNameEnabled: true,
+  pidEnabled: true,
+  ownerNameEnabled: true,
+  none: false,
+};
+
 /**
  * Constructor props for SwizzyWinstonLogger.
  */
@@ -22,6 +76,7 @@ export interface ISwizzyLoggerProps {
   ownerName?: string;
   logFileName?: string;
   noLogFile?: boolean;
+  labelConfiguration?: LogLabelDisplayConfiguration;
 }
 
 /**
@@ -46,14 +101,27 @@ export class SwizzyWinstonLogger extends BaseLogger<ISwizzyLoggerProps> {
       logFileName,
       logDir,
       noLogFile,
+      labelConfiguration,
     } = props;
 
-    const label = `${appendOrNothing(hostName)}${appendOrNothing(port)}${appendOrNothing(instanceId)}${appendOrNothing(appName)}${appendOrNothing(pid)}${appendOrNothing(ownerName)}`;
+    let labelFields = this.buildLabel(
+      labelConfiguration,
+      hostName,
+      port,
+      instanceId,
+      appName,
+      pid,
+      ownerName,
+    );
+
+    const label =
+      labelFields && labelFields.length > 0 ? labelFields.join(":") : undefined;
 
     let resultMessage = "";
+
     const consoleLogFormat = format.combine(
       format.timestamp(),
-      format.label({ label }),
+      format.label({ label, message: label ? true : false }),
       format.colorize({
         all: true,
       }),
@@ -66,8 +134,8 @@ export class SwizzyWinstonLogger extends BaseLogger<ISwizzyLoggerProps> {
     resultMessage += "Setup console logger\n";
     const loggerFormat = format.combine(
       format.timestamp(),
+      format.label({ label, message: label ? true : false }),
       format.json(),
-      format.label({ label }),
     );
 
     // Checkout this sorcery!
@@ -107,7 +175,6 @@ export class SwizzyWinstonLogger extends BaseLogger<ISwizzyLoggerProps> {
       level: logLevel ?? "info",
     });
   }
-
   log(val: string, ...meta: any[]): void {
     this.info(val, ...meta);
   }
@@ -122,6 +189,60 @@ export class SwizzyWinstonLogger extends BaseLogger<ISwizzyLoggerProps> {
   }
   debug(val: string, ...meta: any[]): void {
     this.logger.debug(val, ...meta);
+  }
+
+  private buildLabel(
+    labelConfiguration: LogLabelDisplayConfiguration | undefined,
+    hostName: string,
+    port: number,
+    instanceId: string | undefined,
+    appName: string,
+    pid: number | undefined,
+    ownerName: string | undefined,
+  ) {
+    let labelFields = undefined;
+
+    if (!labelConfiguration?.none) {
+      labelFields = [];
+
+      const configuration = {
+        ...DefaultLabelConfiguration,
+        ...labelConfiguration,
+      };
+
+      const {
+        hostNameEnabled,
+        portEnabled,
+        instanceIdEnabled,
+        appNameEnabled,
+        pidEnabled,
+        ownerNameEnabled,
+      } = configuration;
+
+      if (hostNameEnabled) {
+        labelFields.push(hostName);
+      }
+
+      if (portEnabled) {
+        labelFields.push(port);
+      }
+      if (instanceIdEnabled) {
+        labelFields.push(instanceId);
+      }
+
+      if (appNameEnabled) {
+        labelFields.push(appName);
+      }
+
+      if (pidEnabled) {
+        labelFields.push(pid);
+      }
+
+      if (ownerNameEnabled) {
+        labelFields.push(ownerName);
+      }
+    }
+    return labelFields;
   }
 }
 
